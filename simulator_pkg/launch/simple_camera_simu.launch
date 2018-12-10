@@ -42,6 +42,6 @@
 <!-- Spawn a robot into Gazebo -->
 <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model simple_camera" />
 
-<node name="spawn_sdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find exmpl_models)/colored_block/small_red_block.sdf -sdf -model block" />
+<node name="spawn_sdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find simulator_pkg)/simulator_pkg_models/block_model.sdf -sdf -model block" />
 
 </launch>
