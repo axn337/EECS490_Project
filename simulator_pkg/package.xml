@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>EECS490_Project</name>
+  <name>simulator_pkg</name>
   <version>0.0.0</version>
-  <description>The EECS490_Project package</description>
+  <description>The simulator_pkg package</description>
   
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->

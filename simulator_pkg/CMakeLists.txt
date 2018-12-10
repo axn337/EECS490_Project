@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(EECS490_Project)
+project(simulator_pkg)
 
 find_package(catkin_simple REQUIRED)
 
