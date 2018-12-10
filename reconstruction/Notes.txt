@@ -1,0 +1,6 @@
+How to use reconstruction_test.py:
+
+1. It is still in testing stage, needs images to iron out some kinks
+2. Created a custom rosmsg type called ImageStamped which consists of an image and a pose
+3. Subscribes to this on "/img_stamped"
+4. Publishes sensor_msgs/PointCloud2 to "/3d_pts"
