@@ -61,10 +61,10 @@ int main(int argc, char** argv) {
 	float theta;
 	float radios=0.5;
 	float hight=0.3;
-	float z_bias=0.5;
+	float z_bias=0.0;//0.5;
 	float r_bias=0.0;
-	float p_bias=1.5708;
-	float y_bias=1.5708;
+	float p_bias=0.0;//1.5708;
+	float y_bias=0.0;//1.5708;
 	float x,y,z,roll,pitch,yaw;
 
 	
