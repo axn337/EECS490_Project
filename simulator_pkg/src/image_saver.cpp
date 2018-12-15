@@ -1,5 +1,6 @@
 
 #include <ros/ros.h>
+#include <cmath>
 #include <sensor_msgs/Image.h>
 #include <geometry_msgs/Pose.h>
 
@@ -51,24 +52,21 @@ int main(int argc, char** argv) {
 	gazebo_msgs::SetModelState setmodelstate;
 	gazebo_msgs::ModelState modelstate;
 	
-	modelstate.model_name = "my_object"; 
+	modelstate.model_name = "simple_camera_model"; 
 	modelstate.reference_frame = "world";
 	modelstate.twist = start_twist;
 	modelstate.pose = image_pose_;
 	setmodelstate.request.model_state = modelstate;
 
 	float alpha=0.0;//orientation in x,y plane
-	float theta;
-	float radios=0.5;
-	float hight=0.3;
-	float z_bias=0.0;//0.5;
-	float r_bias=0.0;
-	float p_bias=0.0;//1.5708;
-	float y_bias=0.0;//1.5708;
+	float theta;//the angle of the victor pointing towards the camera
+	float d; //the length of segment from origin to camera origin
+	float dxy=0.5; // the radios projection in xy-plane
+	float hight=0.3; //hight of camera
 	float x,y,z,roll,pitch,yaw;
 
-	
-	theta=atan2(radios,hight);
+	d=sqrt(pow(hight,2)+pow(dxy,2));
+	theta=atan2(hight,dxy);
 	
 	Quaternionf q;
 
@@ -76,12 +74,12 @@ int main(int argc, char** argv) {
 
 		alpha=alpha+0.174533;
 
-		x=sin(alpha);
-		y=cos(alpha);
-		z=hight-z_bias;
-		roll=x*(theta+1.5708-r_bias);
-		pitch=y*(theta+1.5708-p_bias);
-		yaw=alpha+1.5708-y_bias;
+		x=dxy*cos(alpha);
+		y=dxy*sin(alpha);
+		z=hight;
+		roll=cos(alpha)*(theta+1.5708);
+		pitch=sin(alpha)*(theta+1.5708);
+		yaw=alpha+1.5708;
 
 	
 		q = AngleAxisf(roll, Vector3f::UnitX())
@@ -89,8 +87,9 @@ int main(int argc, char** argv) {
 		    * AngleAxisf(yaw, Vector3f::UnitZ());
 
 		image_pose_.position.x = x;
-		image_pose_.position.x = y;
+		image_pose_.position.y = y;
 		image_pose_.position.z = z;
+
 		image_pose_.orientation.x = q.x();
 		image_pose_.orientation.y = q.y();
 		image_pose_.orientation.z = q.z();

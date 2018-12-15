@@ -6,7 +6,7 @@ launch the opencv node with the display:
 
 ------------------------------
 publishing a new pose to the camera
-``rostopic pub -r 2000 /gazebo/set_model_state gazebo_msgs/ModelState '{model_name: simple_camera, pose: { position: { x: 0.2, y: 0, z: 0 }, orientation: {x: 0, y: 0, z: 0, w: 0 } }, twist: { linear: { x: 0, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0}  }, reference_frame: world }'``
+``rostopic pub -r 2000 /gazebo/set_model_state gazebo_msgs/ModelState '{model_name: simple_camera_model, pose: { position: { x: 0.2, y: 1, z: 1 }, orientation: {x: 0, y: 0, z: 0, w: 0 } }, twist: { linear: { x: 0, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0}  }, reference_frame: world }'``
 
 publishing a new pose to the camera
 ``rostopic pub -r 20 /gazebo/set_model_state gazebo_msgs/ModelState '{model_name: block, pose: { position: { x: 0.1, y: 0, z: 0 }, orientation: {x: 0, y: 0, z: 0, w: 0 } }, twist: { linear: { x: 0, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0}  }, reference_frame: world }'``

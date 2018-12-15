@@ -7,5 +7,5 @@
 </node>
 
 <!-- <node pkg="example_opencv" type="find_red_pixels" name="find_red_pixels" output="screen"/>-->
-<node pkg="simulator_pkg" type="image_saver" name="image_saver"/>
+<!--<node pkg="simulator_pkg" type="image_saver" name="image_saver"/>-->
 </launch>
