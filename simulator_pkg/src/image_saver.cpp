@@ -77,9 +77,9 @@ int main(int argc, char** argv) {
 		x=dxy*cos(alpha);
 		y=dxy*sin(alpha);
 		z=hight;
-		roll=cos(alpha)*(theta+1.5708);
-		pitch=sin(alpha)*(theta+1.5708);
-		yaw=alpha+1.5708;
+		roll=(cos(alpha)*theta)-0.234;
+		pitch=(sin(alpha)*theta)+0.958;
+		yaw=alpha+(1.5708)+1.586;
 
 	
 		q = AngleAxisf(roll, Vector3f::UnitX())
