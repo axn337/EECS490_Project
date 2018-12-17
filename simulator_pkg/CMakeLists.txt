@@ -33,6 +33,7 @@ catkin_simple()
 # may add more of these lines for more nodes from the same package
 #cs_add_executable(find_red_pixels src/find_red_pixels.cpp)
 cs_add_executable(image_saver src/image_saver.cpp)
+#cs_add_executable(map_saver src/map_saver.cpp)
 
 #cs_add_executable(harris_corners src/harris_corners.cpp)
 #the following is required, if desire to link a node in this package with a library created in this same package
