@@ -50,12 +50,13 @@ def main():
 	msg1.pose = pose1
 
 	msg2.image = img2_ros
-	msg2.image = img2_ros
+	msg2.pose = pose2
 
 	while not rospy.is_shutdown():
 		pub.publish(msg1)
 		rospy.sleep(0.5)
 		pub.publish(msg2)
+		rospy.sleep(0.5)
 
 if __name__ == '__main__':
 	main()

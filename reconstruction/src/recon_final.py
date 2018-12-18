@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+
 import rospy
 import roslib
 import sensor_msgs
@@ -13,14 +14,12 @@ from sensor_msgs.msg import PointCloud2, PointField
 from reconstruction.msg import ImageStamped
 from std_msgs.msg import Header
 import numpy as np
+from geometry_msgs.msg import Pose
 
 
-imgs = []
-tf_mats = []
-pts = []
-g_seq = 0
+points = []
+K = np.eye(3)
 
-#camera params
 f1 = 1.0
 pp1 = (0.0,0.0)
 f2 = 1.0
@@ -44,24 +43,10 @@ search_params = dict(checks=50)
 K_neighbors = 2
 dist_thresh = 0.7
 
-FIELDS = [
-	PointField(name='x', offset=0,datatype=7,count=1),
-	PointField(name='y', offset=4,datatype=7,count=1),
-	PointField(name='z', offset=8,datatype=7,count=1),
-	]
 
+def pose_to_tf(pose):
 
-
-def CallBack(data):
-	global imgs
-	global tf_mats
-	br = CvBridge()
-	img = br.imgmsg_to_cv2(data.image) #conversion from ROS msg format to cv2
-	
-	origin = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
-
-
-	quat = data.pose.orientation
+	quat = pose.orientation
 
 	tf_mat = np.zeros((4,4))
 
@@ -77,15 +62,11 @@ def CallBack(data):
 	tf_mat[2,1] = 2 * quat.y * quat.z + 2 * quat.x * quat.w
 	tf_mat[2,2] = 1 - 2 * quat.x ** 2 - 2 * quat.y ** 2
 
-	tf_mat[0,3] = data.pose.position.x
-	tf_mat[1,3] = data.pose.position.y
-	tf_mat[2,3] = data.pose.position.z
+	tf_mat[0,3] = pose.position.x
+	tf_mat[1,3] = pose.position.y
+	tf_mat[2,3] = pose.position.z
 	tf_mat[3,3] = 1
-	
-	
-	# for dbg purp
-	imgs.append(img)
-	tf_mats.append(tf_mat)
+	return tf_mat
 
 def make3d(img1, tfMat1, img2, tfMat2):
 	
@@ -138,6 +119,7 @@ def make3d(img1, tfMat1, img2, tfMat2):
 	else:
 		return 0
 
+
 def populatePointCloud(points):
 	header = Header()
 	#header.seq = g_seq
@@ -150,46 +132,45 @@ def populatePointCloud(points):
 	return cloud
 
 
-def main():
-	global pts
-	rospy.init_node('image_feature', anonymous=True)
-	sub = rospy.Subscriber("image_stamped", ImageStamped, CallBack, queue_size=1)
-	pub = rospy.Publisher("reconstructed_pts", PointCloud2, queue_size = 1)
-	rospy.sleep(1)
-	#for dbg 
-	
 
-	prev_cnt = 0
+
+
+def main():
+	global points
+	rospy.init_node('recon', anonymous=True)
+	pub = rospy.Publisher("reconstructed_pts", PointCloud2, queue_size = 1)
+	img1 = cv2.imread('image_1.png')
+	img2 = cv2.imread('image_2.png')
+	pose1 = Pose()
+	pose2 = Pose()
+	pose1.position.x = 0.433012783527
+	pose1.position.y = -0.249999880791
+	pose1.position.z = 0.300000011921
+	pose1.orientation.w = -0.226004580276
+	pose1.orientation.x = 0.224733660268
+	pose1.orientation.y = -0.0251856589319
+	pose1.orientation.z = -0.947513796322
+
+	pose2.position.x = -0.469846427441
+	pose2.position.y = 0.171009778976
+	pose2.position.z = 0.300000011921
+	pose2.orientation.w = -0.955021155296
+	pose2.orientation.x = -0.0593451678968
+	pose2.orientation.y = -0.213517445104
+	pose2.orientation.z = 0.197035643023
+
+	tfmat1 = pose_to_tf(pose1)
+	tfmat2 = pose_to_tf(pose2)
+
 	while not rospy.is_shutdown():
-		imgs_np = np.array(imgs)
-		tf_mats_np = np.array(tf_mats)
-		new_cnt = imgs_np.shape[1]
-		print(imgs_np.shape)
-		prev_cnt = prev_cnt - 1
-		
-		for i in range(prev_cnt, new_cnt-1):
-			img1 = imgs_np[i]
-			img2 = imgs_np[i+1]
-			tf_mat1 = tf_mats_np[i]
-			tf_mat2 = tf_mats_np[i+1]
-			print("inloop")
-			recon_pts = make3d(img1,tf_mat1,img2,tf_mat2)
-			if not len(recon_pts) == 0:
-				new_pts = np.asarray(recon_pts,np.float32)
-				#print(new_pts.shape)
-				for i in range(new_pts.shape[1]):
-					pts.append([new_pts[0,i],new_pts[1,i],new_pts[2,i]])
-			cloud = populatePointCloud(pts) 
-			pub.publish(cloud)
-			
-		prev_cnt += new_cnt -1
-		rospy.sleep(1)
+		pts = make3d(img1,tfmat1,img2,tfmat2)
+		pts = np.asarray(pts,np.float32)
+		for i in range(pts.shape[1]):
+			points.append([pts[0,i],pts[1,i],pts[2,i]])
+		cloud = populatePointCloud(points) 
+		pub.publish(cloud)
+		rospy.sleep(0.5)
 
 
 if __name__ == '__main__':
 	main()
-
-
-
-		 
-
